@@ -1,0 +1,36 @@
+- name: Enable nagios Shell (Bash)
+  ansible.builtin.user:
+    name: nagios
+    shell: /bin/bash
+
+- name: Add needrestart to sudoers
+  ansible.builtin.blockinfile:
+    path: /etc/sudoers.d/wibu-nagios-needrestart
+    block: |
+      #
+      # this sudoers file gives nagios the rights to execute needrestart with root-privileges
+      # copy to /etc/sudoers.d
+      #
+
+      Cmnd_Alias C_NEEDRESTART_PK = /usr/sbin/needrestart -pk
+      Defaults!C_NEEDRESTART_PK !requiretty
+      nagios ALL = (root) NOPASSWD: NOSETENV: C_NEEDRESTART_PK
+      
+      Cmnd_Alias C_NEEDRESTART_PL = /usr/sbin/needrestart -pl
+      Defaults!C_NEEDRESTART_PL !requiretty
+      nagios ALL = (root) NOPASSWD: NOSETENV: C_NEEDRESTART_PL
+
+      Cmnd_Alias C_NEEDRESTART_PW = /usr/sbin/needrestart -pw
+      Defaults!C_NEEDRESTART_PW !requiretty
+      nagios ALL = (root) NOPASSWD: NOSETENV: C_NEEDRESTART_PW
+      
+      Cmnd_Alias C_NAGIOS_APT_UPD = /usr/lib/nagios/plugins/check_apt -nu
+      Defaults!C_NAGIOS_APT_UPD !requiretty
+      nagios ALL = (root) NOPASSWD: NOSETENV: C_NAGIOS_APT_UPD
+
+      Cmnd_Alias C_NEEDRESTART_P = /usr/sbin/needrestart -p
+      Defaults!C_NEEDRESTART_P !requiretty
+      nagios ALL = (root) NOPASSWD: NOSETENV: C_NEEDRESTART_P
+    create: yes
+    mode: '0440'
+

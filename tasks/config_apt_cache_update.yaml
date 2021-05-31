@@ -1,0 +1,8 @@
+- name: Automatically update Apt Cache
+  ansible.builtin.blockinfile:
+    path: /etc/apt/apt.conf.d/90wibu-icinga-apt-cache
+    block: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Download-Upgradeable-Packages "1";
+      APT::Periodic::AutocleanInterval "7";
+    create: yes

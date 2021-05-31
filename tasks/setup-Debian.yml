@@ -21,3 +21,5 @@
   apt:
     name:
       - monitoring-plugins-basic
+      - needrestart
+  

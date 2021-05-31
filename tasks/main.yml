@@ -34,7 +34,7 @@
   shell: |
     icinga2 pki ticket --cn {{ icinga2_cn }}
   register: icinga2_ticket
-  delegate_to: "{{ icinga2_master_delegate }}"
+  delegate_to: "{{ansible_user}}@{{ icinga2_master_delegate }}"
   changed_when: false
 
 - name: Fetch trusted master certificate
@@ -63,6 +63,10 @@
   args:
     creates: "{{ icinga2_pki_path }}/{{ icinga2_cn }}.crt"
   notify: restart icinga2
+
+- include: tasks/config_apt_cache_update.yaml
+
+- include: tasks/config_sudoers_needrestart.yaml
 
 - name: Ensure that Icinga2 is enabled and running
   service:
